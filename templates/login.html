@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6"> <!-- Increased width of the form -->
+        <div class="card shadow-lg" style="border-radius: 1rem;">
+            <div class="card-body p-4">
+                <h2 class="card-title text-center mb-4"><i class="fas fa-sign-in-alt"></i> Login</h2>
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                <form method="POST" action="/login">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</button> <!-- Added icon to button -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12"> <!-- Changed to full width -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-shield-alt"></i> Login Security</h5> <!-- Added icon -->
+                        <p class="card-text">Ensure your password is strong and unique. Consider enabling two-factor authentication for added security.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-key"></i> Password Strength</h5> <!-- Added icon -->
+                        <p class="card-text">Use a mix of letters, numbers, and symbols to create a strong password. Avoid using easily guessable information.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-lock-open"></i> Two-Factor Authentication</h5> <!-- Added icon -->
+                        <p class="card-text">Enable two-factor authentication to add an extra layer of security to your account.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

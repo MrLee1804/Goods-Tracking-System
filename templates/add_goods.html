@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="text-center">Our Goods Page</h2>
+        
+        <div class="mb-3">
+            <input type="text" class="form-control" id="searchInput" placeholder="Search goods..." aria-label="Search goods" onkeyup="filterGoods()">
+        </div>
+        <div class="mb-3">
+            <a href="/add_item" class="btn btn-primary">Add Item</a>
+            <a href="/get_csv_data" class="btn btn-secondary">Get CSV Data</a> <!-- Updated button text -->
+            <a href="/download_goods" class="btn btn-success">Download CSV</a> <!-- New download button -->
+        </div>
+
+        <div id="noResultsMessage" class="alert alert-warning" style="display: none;">No items found matching your search.</div>
+
+        <table class="table table-striped" id="goodsTable">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for good in goods %}
+                <tr>
+                    <td>{{ good.name }}</td>
+                    <td>{{ good.quantity }}</td>
+                    <td>{{ good.price }}</td>
+                    <td>
+                        <form method="POST" action="/delete/{{ loop.index0 }}">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function filterGoods() {
+    const input = document.getElementById('searchInput');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('goodsTable');
+    const tr = table.getElementsByTagName('tr');
+    let found = false;
+
+    for (let i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+        const td = tr[i].getElementsByTagName('td');
+        let rowFound = false;
+        for (let j = 0; j < td.length; j++) {
+            if (td[j]) {
+                const txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    rowFound = true;
+                    break;
+                }
+            }
+        }
+        tr[i].style.display = rowFound ? "" : "none"; // Show or hide the row
+        if (rowFound) found = true;
+    }
+
+    // Display message if no results found
+    const noResultsMessage = document.getElementById('noResultsMessage');
+    noResultsMessage.style.display = found ? "none" : "block";
+}
+</script>
+{% endblock %}

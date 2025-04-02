@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="text-center">Dashboard</h2>
+        <p class="text-center">Welcome to the Goods Tracking System Dashboard. Here you can manage your inventory and view statistics.</p>
+        
+        <div class="row mt-4">
+            <div class="col-md-4 mb-5">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Items</h5>
+                        <p class="card-text">{{ goods|length }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-5">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Quantity</h5>
+                        <p class="card-text">{{ goods|sum(attribute='Quantity') }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-5">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Value</h5>
+                        <p class="card-text">₹{{ goods|sum(attribute='Price') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4 mb-5">
+            <div class="col-md-12">
+                <h4 class="text-center">Quick Links</h4>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="/add_item" class="btn btn-primary me-md-2">Add Item</a>
+                    <a href="/goods_data" class="btn btn-secondary me-md-2">View Goods</a>
+                    <a href="/statistics" class="btn btn-success">View Statistics</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Stock Reports</h1>
+    <div class="row">
+        <div class="col mb-5">
+            <div class="card">
+                <h2>Total Purchase Value</h2>
+                <p id="totalPurchase">₹{{ stock_purchase }}</p>
+                <canvas id="purchaseChart"></canvas>
+                <a href="{{ url_for('download_purchase_report') }}" class="btn btn-success">Download Purchase Data</a>
+
+            </div>
+        </div>
+        <div class="col mb-5">
+            <div class="card">
+                <h2>Total Sales Value</h2>
+                <p id="totalSales">₹{{ stock_sales }}</p>
+                <canvas id="salesChart"></canvas>
+                <a href="{{ url_for('download_sales_report') }}" class="btn btn-success">Download Sales Data</a>
+
+            </div>
+        </div>
+        <div class="col mb-5">
+            <div class="card">
+                <h2>Net Stock Value</h2>
+                <p id="netStock">₹{{ net_stock }}</p>
+                <canvas id="netStockChart"></canvas>
+                <a href="{{ url_for('download_net_stock_report') }}" class="btn btn-success">Download Net Stock Data</a>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+
+    <script>
+        const socket = io();
+
+        // Store initial values in variables
+        let totalPurchase = {{ stock_purchase }};
+        let totalSales = {{ stock_sales }};
+        let netStock = {{ net_stock }};
+
+        const purchaseCtx = document.getElementById('purchaseChart').getContext('2d');
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const netStockCtx = document.getElementById('netStockChart').getContext('2d');
+
+        const purchaseChart = new Chart(purchaseCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Purchase'],
+                datasets: [{
+                    label: 'Purchase Value',
+                    data: [totalPurchase],
+                    backgroundColor: 'rgba(3, 9, 45, 0.8)',
+                    borderColor: 'rgba(3, 9, 45, 0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const salesChart = new Chart(salesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Sales'],
+                datasets: [{
+                    label: 'Sales Value',
+                    data: [totalSales],
+                    backgroundColor: 'rgba(16, 44, 173, 0.8)',
+                    borderColor: 'rgba(16, 44, 173, 0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const netStockChart = new Chart(netStockCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Net Stock'],
+                datasets: [{
+                    label: 'Net Stock Value',
+                    data: [netStock],
+                    backgroundColor: 'rgba(4, 107, 14, 0.8)',
+                    borderColor: 'rgba(4, 107, 14, 0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        socket.on('update_sales', function (data) {
+            const stockSalesElement = document.getElementById('totalSales');
+            const netStockElement = document.getElementById('netStock');
+
+            // Update the sales value
+            totalSales += (data.quantity_sold * data.price);
+            stockSalesElement.textContent = '₹' + totalSales.toFixed(2);
+
+            // Update the net stock value
+            netStock += (data.quantity_sold * data.price);  // Corrected to add sales to net stock
+            netStockElement.textContent = '₹' + netStock.toFixed(2);
+
+
+        });
+    </script>
+</div>
+{% endblock %}
